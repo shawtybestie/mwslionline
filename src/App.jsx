@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 // ==========================================
 // НАСТРОЙКА SUPABASE ДЛЯ ДИПЛОМА
 // ==========================================
-const SUPABASE_URL = "https://gqbdesafpuiszptwhxiy.supabase.co/rest/v1/"; 
+const SUPABASE_URL = "supabase.co"; 
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxYmRlc2FmcHVpc3pwdHdoeGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MTY4MTYsImV4cCI6MjA5NDE5MjgxNn0.Q2b9b3fW6ZLHtWUVF1nBXTEGgOKNxKSM0yURq6Iux0U"; 
 
 const isSupabaseConfigured = SUPABASE_URL.trim() !== "" && !SUPABASE_URL.includes("ВСТАВЬТЕ");
@@ -28,11 +28,14 @@ export default function App() {
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
+  // Перенесли функцию в самый верх компонента, чтобы исключить ReferenceError
   const getUserRankInfo = (count) => {
     if (count >= 20) return { avatar: "💀", label: "Загадка", isSmoking: true, nextText: "Высшая ступень достигнута" };
     if (count >= 10) return { avatar: "🖤", label: "Колонна", isSmoking: false, nextText: "Ступень скрыта" };
     return { avatar: "🎭", label: "Меланхолик", isSmoking: false, nextText: `До Колонны: ${10 - count}` };
   };
+
+  const userRank = getUserRankInfo(user?.msgCount || 0);
 
   // --- ЧТЕНИЕ ИЗ SQL БАЗЫ ДАННЫХ ---
   useEffect(() => {
@@ -83,7 +86,6 @@ export default function App() {
     e.preventDefault();
     if (isRegistering && !authForm.username.trim()) return;
     
-    // СТРОГО ИСПРАВЛЕННЫЙ СИНТАКСИС (Добавлен индекс [0])
     const derivedName = isRegistering ? authForm.username : authForm.email.split("@")[0];
     
     setUser({
@@ -320,6 +322,9 @@ export default function App() {
       </div>
     );
   }
+
+  const isSectionLocked = activeCategory === "Прижился" && (user?.msgCount || 0) < 10;
+  const allTabs = ["Популярное", "Поток", "Прижился", ...customTopics];
 
   return (
     <div className="min-h-screen bg-black flex justify-center text-white font-serif selection:bg-zinc-800 w-full overflow-x-hidden">
