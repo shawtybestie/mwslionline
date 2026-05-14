@@ -5,8 +5,8 @@ import { createClient } from "@supabase/supabase-js";
 // ==========================================
 // НАСТРОЙКА SUPABASE ДЛЯ ДИПЛОМА
 // ==========================================
-const SUPABASE_URL = ""; 
-const SUPABASE_ANON_KEY = ""; 
+const SUPABASE_URL = "https://gqbdesafpuiszptwhxiy.supabase.co/rest/v1/"; 
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxYmRlc2FmcHVpc3pwdHdoeGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2MTY4MTYsImV4cCI6MjA5NDE5MjgxNn0.Q2b9b3fW6ZLHtWUVF1nBXTEGgOKNxKSM0yURq6Iux0U"; 
 
 const isSupabaseConfigured = SUPABASE_URL.trim() !== "" && !SUPABASE_URL.includes("ВСТАВЬТЕ");
 const supabase = isSupabaseConfigured ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
