@@ -82,8 +82,12 @@ export default function App() {
   const handleAuthSubmit = (e) => {
     e.preventDefault();
     if (isRegistering && !authForm.username.trim()) return;
+    
+    // СТРОГО ИСПРАВЛЕННЫЙ СИНТАКСИС (Добавлен индекс [0])
+    const derivedName = isRegistering ? authForm.username : authForm.email.split("@")[0];
+    
     setUser({
-      username: isRegistering ? authForm.username : authForm.email.split("@")[0],
+      username: derivedName,
       email: authForm.email,
       color: "text-slate-200",
       msgCount: user?.msgCount || 0 
@@ -97,7 +101,6 @@ export default function App() {
     setScreen("welcome");
   };
 
-  // Основная функция отправки
   const executeSubmitPost = async () => {
     if (!newPost.trim() || !user) return;
     if (activeCategory === "Прижился" && user.msgCount < 10) return;
@@ -206,7 +209,6 @@ export default function App() {
     .smoke-effect { animation: deepSmoke 4s infinite ease-in-out; display: inline-block; }
   `;
 
-  // ================= ЭКРАН 1: ПРИВЕТСТВИЕ =================
   if (screen === "welcome") {
     return (
       <div className="min-h-screen bg-black flex justify-center text-white font-serif selection:bg-zinc-700/50 w-full overflow-x-hidden">
@@ -230,7 +232,6 @@ export default function App() {
     );
   }
 
-  // ================= ЭКРАН 2: АВТОРИЗАЦИЯ =================
   if (screen === "auth") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black relative px-4 font-serif w-full overflow-x-hidden" style={{ backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), url('/backphone.jpg')` }}>
@@ -264,7 +265,6 @@ export default function App() {
     );
   }
 
-  // ================= ЭКРАН 4: ЛИЧНЫЙ КАБИНЕТ =================
   if (screen === "profile" && user) {
     const myRank = getUserRankInfo(user.msgCount);
     return (
@@ -320,11 +320,6 @@ export default function App() {
       </div>
     );
   }
-
-  // ================= ЭКРАН 3: ГЛАВНАЯ ЛЕНТА (МОБИЛЬНАЯ АДАПТАЦИЯ) =================
-  const userRank = getUserRankInfo(user?.msgCount || 0);
-  const isSectionLocked = activeCategory === "Прижился" && (user?.msgCount || 0) < 10;
-  const allTabs = ["Популярное", "Поток", "Прижился", ...customTopics];
 
   return (
     <div className="min-h-screen bg-black flex justify-center text-white font-serif selection:bg-zinc-800 w-full overflow-x-hidden">
@@ -402,7 +397,6 @@ export default function App() {
               {filteredPosts.length === 0 && <div className="text-center py-8 text-zinc-600 text-xs italic z-10">В этой секции пока нет мыслей...</div>}
             </div>
 
-            {/* ИСПРАВЛЕННЫЙ ТЕГ ДЛЯ СМАРТФОНОВ — ДЕЛАЕТ МГНОВЕННЫЙ СЕНД С КЛАВИАТУРЫ ТЕЛЕФОНА */}
             <div className="mt-auto pt-3 border-t border-zinc-900/60 bg-black/40 backdrop-blur-md z-10">
               <form onSubmit={(e) => { e.preventDefault(); executeSubmitPost(); }} className="flex gap-2 items-end">
                 <input
@@ -422,6 +416,4 @@ export default function App() {
       </div>
     </div>
   );
-}
-
 }
